@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha test/**/*.spec.js",
     "preversion": "npm run test && travis lint .travis.yml",
-    "postversion": "node hooks/post-version.js && git push --follow-tags"
+    "postversion": "node hooks/post-version.js && git commit -a -m 'Post Version Commit' && git push --follow-tags"
   },
   "author": "Charlie McClunt",
   "license": "MIT",
