@@ -1,0 +1,22 @@
+{
+  "name": "cmr1-aws",
+  "version": "1.0.0",
+  "description": "AWS service helper classes",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/**/*.spec.js"
+  },
+  "author": "Charlie McClunt",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.7.21",
+    "colors": "^1.1.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
