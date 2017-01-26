@@ -5,6 +5,9 @@ node_js:
 - 6.9.4
 - 7.0.0
 - 7.4.0
+branches:
+  only:
+    - /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig
 env:
   global:
   - AWS_DEFAULT_REGION=us-west-2
