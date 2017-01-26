@@ -1,16 +1,22 @@
 {
   "name": "cmr1-aws",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "AWS service helper classes",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/**/*.spec.js"
+    "test": "mocha test/**/*.spec.js",
+    "preversion": "npm run test",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "author": "Charlie McClunt",
   "license": "MIT",
+  "repository": { 
+    "type" : "git", 
+    "url": "https://github.com/cmr1/node-aws.git"
+  },
   "dependencies": {
     "aws-sdk": "^2.7.21",
     "colors": "^1.1.2"
