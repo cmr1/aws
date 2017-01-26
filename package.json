@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "mocha test/**/*.spec.js",
-    "preversion": "npm run test",
-    "postversion": "git push && git push --tags && npm publish"
+    "preversion": "npm run test && travis lint .travis.yml",
+    "postversion": "git push && git push --tags"
   },
   "author": "Charlie McClunt",
   "license": "MIT",
