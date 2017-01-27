@@ -9,19 +9,23 @@ const Zone = require('./Zone');
 
 class Route53 extends Service {
         getZoneCount() {
+            const { params, callback } = Route53.getArgs(arguments);
 
+            this.getHostedZoneCount(params, resp => {
+                callback(resp.HostedZoneCount);
+            });
         }
 
         getZones() {
-                const { params, callback } = Route53.getArgs(arguments);
+            const { params, callback } = Route53.getArgs(arguments);
 
-        this.listHostedZones(params, data => {
-            const hostedZones = data.HostedZones || [];
+            this.listHostedZones(params, data => {
+                const hostedZones = data.HostedZones || [];
 
-            callback(hostedZones.map(zoneData => {
-                return new Zone(zoneData, this);
-            }));
-        });
+                callback(hostedZones.map(zoneData => {
+                    return new Zone(zoneData, this);
+                }));
+            });
         }
 
         getZoneByName() {
@@ -62,6 +66,10 @@ class Route53 extends Service {
                 method: 'getChange'
             }
         ];
+    }
+
+    static get Zone() {
+        return Zone;
     }
 }
 

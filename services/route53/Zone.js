@@ -28,6 +28,12 @@ class Zone extends Resource {
         });
     }
 
+    newRecordSet() {
+        const { params } = Zone.getArgs(arguments);
+
+        return new RecordSet(params, this);
+    }
+
     supportedMethods() {
         return [
             {

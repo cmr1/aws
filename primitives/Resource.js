@@ -23,6 +23,8 @@ class Resource extends Dynamic {
             this.defaultParams = Object.assign({}, this.defaultParams, resource.defaultParams);
         }
 
+        this.parent = resource || service;
+
         this.service = service || resource.service;
 
         if (!this.service) {
@@ -36,18 +38,16 @@ class Resource extends Dynamic {
         this.buildMethods();
     }
 
-    setProperties() {
-        const { properties } = Resource.getArgs(arguments, {
-            'object': 'properties'
-        });
-
+    setProperties(properties, safe = true) {
         if (typeof properties === 'object') {
-            Object.keys(properties).forEach(key => {
-                if (typeof this[key] !== 'undefined') {
+            this.properties = Object.assign({}, properties);
+
+            Object.keys(this.properties).forEach(key => {
+                if (safe && typeof this[key] !== 'undefined') {
                     Resource.error(`Conflicting property key: '${key}'`);
                 }
 
-                this[key] = properties[key];
+                this[key] = this.properties[key];
             });
         }
     }

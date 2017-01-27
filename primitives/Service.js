@@ -1,5 +1,6 @@
 'use strict';
 
+const async = require('async');
 const AWS = require('aws-sdk');
 const Dynamic = require('./Dynamic');
 
@@ -18,6 +19,39 @@ class Service extends Dynamic {
         return typeof method === 'string' && typeof this.handler[method] === 'function';
     }
 
+    reduceResponses(responses = []) {
+        if (!Array.isArray(responses)) {
+            Service.error('Can only reduce Arrays!');
+        }
+
+        Service.debug('Reducing ' + responses.length + ' responses');
+
+        if (responses.length === 1) {
+            Service.debug('Returning single response');
+            return responses[0];
+        } else if (responses.length > 1) {
+            Service.debug('Collapsing immediate arrays...');
+
+            const template = responses[0];
+
+            for (let i=1; i<responses.length; i++) {
+                const response = responses[i];
+
+                Object.keys(template).forEach(key => {
+                    if (Array.isArray(template[key]) && Array.isArray(response[key])) {
+                        template[key] = template[key].concat(response[key]);
+                    }
+                });
+            }
+
+            return template;
+        }
+
+        Service.warn('Unable to reduce responses!');
+
+        return {};
+    }
+
     generic() {
         const { method, params, callback, required } = Service.getArgs(arguments);
 
@@ -31,31 +65,45 @@ class Service extends Dynamic {
 
         Service.debug('Executing method:', method, 'with params:', params);
 
-        this.exec(method, params).then(data => {
-            Service.debug('Result:', data);
+        let isFinished = true;
 
-            if (data.IsTruncated) {
-                Service.debug('Result is truncated');
+        const responses = [];
 
-                let nextMarker = data.NextMarker;
+        async.doWhilst(
+            (next) => {
+                this.exec(method, params).then(data => {
+                    Service.debug('Result:', data);
 
-                if (typeof nextMarker !== 'string') {
-                    nextMarker = data.Contents[data.Contents.length - 1].Key;
+                    responses.push(data);
+
+                    isFinished = !data.IsTruncated;
+
+                    if (data.IsTruncated) {
+                        Service.debug('Result is truncated');
+
+                        let nextMarker = data.NextMarker;
+
+                        if (typeof nextMarker !== 'string') {
+                            nextMarker = data.Contents[data.Contents.length - 1].Key;
+                        }
+
+                        Service.debug('Load nextMarker:', nextMarker);
+
+                        params.Marker = nextMarker;
+                    }
+
+                    next();
+                }).catch(Service.error);
+            },
+            () => {
+                return !isFinished;
+            },
+            (err) => {
+                if (typeof callback === 'function') {
+                    callback(this.reduceResponses(responses));
                 }
-
-                Service.debug('Load nextMarker:', nextMarker);
-
-                const next_params = Object.assign({}, params, {
-                    Marker: nextMarker
-                });
-
-                this.generic(method, next_params, callback);
             }
-
-            if (typeof callback === 'function') {
-                callback(data);
-            }
-        }).catch(Service.error);
+        );
     }
 
     exec() {

@@ -18,6 +18,7 @@
     "url": "https://github.com/cmr1/aws-node.git"
   },
   "dependencies": {
+    "async": "^2.1.4",
     "aws-sdk": "^2.7.21",
     "colors": "^1.1.2"
   },
