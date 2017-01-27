@@ -8,12 +8,12 @@ const Service = require(primitivesPath).Service;
 const Zone = require('./Zone');
 
 class Route53 extends Service {
-		getZoneCount() {
+        getZoneCount() {
 
-		}
+        }
 
-		getZones() {
-				const { params, callback } = Route53.getArgs(arguments);
+        getZones() {
+                const { params, callback } = Route53.getArgs(arguments);
 
         this.listHostedZones(params, data => {
             const hostedZones = data.HostedZones || [];
@@ -22,25 +22,27 @@ class Route53 extends Service {
                 return new Zone(zoneData, this);
             }));
         });
-		}
+        }
 
-		getZoneByName() {
-				const { name, callback } = Route53.getArgs(arguments, {
-					'string': 'name'
-				});
+        getZoneByName() {
+                const { name, params, callback } = Route53.getArgs(arguments, {
+                    'string': 'name'
+                });
 
-				this.getZones((zones) => {
-						const filtered = zones.filter(zone => {
-							return zone.Name === name.trim() || zone.Name === name.trim() + '.';
-						});
+                this.listHostedZones(params, data => {
+                    const hostedZones = data.HostedZones || [];
 
-						if (filtered.length > 0) {
-							return callback(filtered[0]);
-						} else {
-							callback();
-						}
-				});
-		}
+                    const filtered = hostedZones.filter(zone => {
+                        return zone.Name === name.trim() || zone.Name === name.trim() + '.';
+                    });
+
+                    if (filtered.length > 0) {
+                        return callback(filtered.map(z => { return new Zone(z, this); })[0]);
+                    } else {
+                        callback();
+                    }
+                });
+        }
 
     supportedMethods() {
         return [
@@ -48,13 +50,13 @@ class Route53 extends Service {
                 method: 'listHostedZones'
             },
             {
-            		method: 'listHostedZonesByName'
+                    method: 'listHostedZonesByName'
             },
             {
-            		method: 'getHostedZone'
+                    method: 'getHostedZone'
             },
             {
-            		method: 'getHostedZoneCount'
+                    method: 'getHostedZoneCount'
             }
         ];
     }
