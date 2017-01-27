@@ -32,6 +32,12 @@ class Zone extends Resource {
         return [
             {
                 method: 'listResourceRecordSets'
+            },
+            {
+                method: 'changeResourceRecordSets',
+                required: [
+                    'ChangeBatch'
+                ]
             }
         ];
     }

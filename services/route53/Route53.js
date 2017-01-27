@@ -57,6 +57,9 @@ class Route53 extends Service {
             },
             {
                     method: 'getHostedZoneCount'
+            },
+            {
+                method: 'getChange'
             }
         ];
     }
