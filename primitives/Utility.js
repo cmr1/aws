@@ -66,12 +66,18 @@ class Utility {
         return args;
     }
 
+    static dateString() {
+        let stamp = new Date().toISOString();
+
+        return `[${stamp}] `;
+    }
+
     static log() {
-        console.log(...Utility.colorize(arguments, 'green'));
+        console.log(Utility.dateString(),...Utility.colorize(arguments, 'green'));
     }
 
     static warn() {
-        console.warn(colors.yellow('WARN: '), ...Utility.colorize(arguments, 'yellow'));
+        console.warn(Utility.dateString(),colors.yellow('WARN: '), ...Utility.colorize(arguments, 'yellow'));
     }
 
     static debug() {
@@ -83,7 +89,7 @@ class Utility {
     static error() {
         const err_msg = (typeof arguments[0] === 'string' ? arguments[0] : 'Unknown error');
 
-        console.error(colors.red('ERROR: '), ...Utility.colorize(arguments, 'red'));
+        console.error(Utility.dateString(),colors.red('ERROR: '), ...Utility.colorize(arguments, 'red'));
 
         throw new Error(err_msg);
     }
