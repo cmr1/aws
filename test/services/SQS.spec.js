@@ -13,8 +13,7 @@ describe('SQS', function() {
     });
 
     const queueParams = {
-        QueueUrl: 'https://sqs.us-east-1.amazonaws.com/776426860670/QuantumTest',
-        // QueueUrl: "https://sqs.us-west-2.amazonaws.com/590744054339/BowtieTest"
+        QueueUrl: ' https://sqs.us-west-2.amazonaws.com/782771874404/cmr1-travis-ci-test'
     };
 
     it('should exist', function() {
