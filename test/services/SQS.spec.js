@@ -8,12 +8,11 @@ const { SQS } = require('../../services');
 
 describe('SQS', function() {
     const sqs = new SQS({
-        // region: 'us-west-2'
-        region: 'us-east-1'
+        region: 'us-west-2'
     });
 
     const queueParams = {
-        QueueUrl: ' https://sqs.us-west-2.amazonaws.com/782771874404/cmr1-travis-ci-test'
+        QueueUrl: 'https://sqs.us-west-2.amazonaws.com/782771874404/cmr1-travis-ci-test'
     };
 
     it('should exist', function() {
@@ -27,23 +26,20 @@ describe('SQS', function() {
             Body: msgBody
         });
 
-        // TODO: Figure out test account ...
-        done();
+        sqs.listen(queueParams, msgs => {
+            expect(msgs).to.be.an.instanceof(Array);
 
-        // sqs.listen(queueParams, msgs => {
-        //     expect(msgs).to.be.an.instanceof(Array);
+            const expected = msgs.filter(msg => {
+                return msg.Body === msgBody
+            });
 
-        //     const expected = msgs.filter(msg => {
-        //         return msg.Body === msgBody
-        //     });
+            expect(expected).to.have.length.above(0);
 
-        //     expect(expected).to.have.length.above(0);
+            expect(expected[0]).to.be.an.instanceof(SQS.Message);
 
-        //     expect(expected[0]).to.be.an.instanceof(SQS.Message);
+            done();
+        });
 
-        //     done();
-        // });
-
-        // myMessage.send(queueParams);
+        myMessage.send(queueParams);
     });
 });
