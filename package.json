@@ -1,6 +1,6 @@
 {
   "name": "cmr1-aws",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "AWS service helper classes",
   "main": "index.js",
   "directories": {
