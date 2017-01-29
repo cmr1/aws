@@ -12,15 +12,7 @@ class SQS extends Service {
         super(...arguments);
 
         this.setDefaultParams({
-            AttributeNames: [
-                "All"
-            ],
-            MaxNumberOfMessages: 1,
-            MessageAttributeNames: [
-                "All"
-            ],
-            VisibilityTimeout: 20,
-            WaitTimeSeconds: 20
+            // Default SQS parameters
         });
     }
 
@@ -69,11 +61,7 @@ class SQS extends Service {
             {
                 method: 'receiveMessage',
                 required: [
-                    'AttributeNames',
-                    'MessageAttributeNames',
                     'QueueUrl',
-                    'VisibilityTimeout',
-                    'WaitTimeSeconds'
                 ]
             }
         ];
