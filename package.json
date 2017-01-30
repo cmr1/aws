@@ -11,7 +11,7 @@
     "preversion": "travis lint .travis.yml",
     "postversion": "git push --follow-tags"
   },
-  "author": "Charlie McClunt",
+  "author": "Charlie McClung",
   "license": "MIT",
   "repository": {
     "type": "git",
