@@ -9,7 +9,7 @@
   "scripts": {
     "pretest": "node hooks/pre-test.js --force",
     "test": "mocha test/**/*.spec.js",
-    "preversion": "travis lint .travis.yml",
+    "preversion": "npm test && travis lint .travis.yml",
     "postversion": "git push --follow-tags"
   },
   "author": "Charlie McClung",
