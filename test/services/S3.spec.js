@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 
 // Require S3 Service Class
-const { S3 } = require('../../services');
+const { S3 } = require('../../');
 
 describe('S3', function() {
     const s3 = new S3();

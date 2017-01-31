@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 
 // Require Resource Class
-const { Resource } = require('../../primitives');
+const { Resource } = require('../../lib/primitives');
 
 describe('Resource', function() {
     it('should exist', function() {

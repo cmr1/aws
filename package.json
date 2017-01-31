@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "pretest": "node hooks/pre-test.js --force",
     "test": "mocha test/**/*.spec.js",
     "preversion": "travis lint .travis.yml",
     "postversion": "git push --follow-tags"
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "cmr1-cli": "^0.1.0",
     "mocha": "^3.2.0",
     "replace": "^0.3.0"
   }

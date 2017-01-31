@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 
 // Require Dynamic Class
-const { Dynamic } = require('../../primitives');
+const { Dynamic } = require('../../lib/primitives');
 
 describe('Dynamic', function() {
     it('should exist', function() {

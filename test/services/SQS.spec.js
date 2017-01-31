@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 
 // Require SQS Service Class
-const { SQS } = require('../../services');
+const { SQS } = require('../../');
 
 
 describe('SQS', function() {
