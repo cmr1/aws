@@ -36,6 +36,7 @@ describe('SQS', function() {
             expect(expected).to.have.length.above(0);
 
             expect(expected[0]).to.be.an.instanceof(SQS.Message);
+            expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
 
             done();
         });
