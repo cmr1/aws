@@ -16,7 +16,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cmr1/aws-node.git"
+    "url": "https://github.com/cmr1/node-aws.git"
   },
   "dependencies": {
     "async": "^2.1.4",
