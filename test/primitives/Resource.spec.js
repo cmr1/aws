@@ -2,11 +2,11 @@
 
 const expect = require('chai').expect;
 
-// Require Resource Class
-const { Resource } = require('../../lib/primitives');
+// Require AWSResource Class
+const { AWSResource } = require('../../lib/primitives');
 
-describe('Resource', function() {
+describe('AWSResource', function() {
     it('should exist', function() {
-        expect(Resource).to.exist;
+        expect(AWSResource).to.exist;
     });
 });

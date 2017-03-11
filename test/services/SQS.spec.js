@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 
-// Require SQS Service Class
+// Require SQS AWSService Class
 const { SQS } = require('../../');
 
 
@@ -20,27 +20,29 @@ describe('SQS', function() {
     });
 
     it('should be able to send & receive messages', function(done) {
-        const msgBody = 'This is a test message';
-
-        const myMessage = sqs.newMessage({
-            Body: msgBody
-        });
-
-        sqs.listen(queueParams, msgs => {
-            expect(msgs).to.be.an.instanceof(Array);
-
-            const expected = msgs.filter(msg => {
-                return msg.Body === msgBody
+        sqs.getQueue({ QueueName: 'Test-Queue-1' }, queue => {
+            const msgBody = 'This is a test message';
+            
+            const myMessage = queue.newMessage({
+                Body: msgBody
             });
 
-            expect(expected).to.have.length.above(0);
+            queue.listen(msgs => {
+                expect(msgs).to.be.an.instanceof(Array);
 
-            expect(expected[0]).to.be.an.instanceof(SQS.Message);
-            expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
+                const expected = msgs.filter(msg => {
+                    return msg.Body === msgBody
+                });
 
-            done();
+                expect(expected).to.have.length.above(0);
+
+                expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message);
+                expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
+
+                done();
+            });
+
+            myMessage.send();
         });
-
-        myMessage.send(queueParams);
     });
 });
