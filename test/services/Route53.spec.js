@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 
-// Require Route53 Service Class
+// Require Route53 AWSService Class
 const { Route53 } = require('../../');
 
 describe('Route53', function() {

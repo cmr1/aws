@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 
-// Require S3 Service Class
+// Require S3 AWSService Class
 const { S3 } = require('../../');
 
 describe('S3', function() {
