@@ -7,27 +7,45 @@ const { SQS } = require('../../');
 
 
 describe('SQS', function() {
-    const sqs = new SQS({
-        region: 'us-west-2'
-    });
+    const sqs = new SQS();
 
     const queueParams = {
-        QueueUrl: 'https://sqs.us-west-2.amazonaws.com/782771874404/cmr1-travis-ci-test'
+        QueueName: 'cmr1-aws-mocha-test'
     };
 
     it('should exist', function() {
         expect(SQS).to.exist;
     });
 
-    it('should be able to send & receive messages', function(done) {
-        sqs.getQueue({ QueueName: 'Test-Queue-1' }, queue => {
+    describe('Queue', function() {
+        const queueName = 'cmr1-aws-test-' + Date.now().toString();
+        let queue = null;
+
+        before(function(done) {
+            sqs.getQueue({ QueueName: queueName }, objQueue => {
+                if (objQueue) {
+                    queue = objQueue;
+                    done();
+                } else {
+                    done('Unable to create/load queue: ' + queueName);
+                }
+            });
+        });
+
+        after(function(done) {
+            queue.delete(resp => {
+                done();
+            });
+        });
+        
+        it('should be able to send & receive messages', function(done) {
             const msgBody = 'This is a test message';
             
             const myMessage = queue.newMessage({
                 Body: msgBody
             });
 
-            queue.listen(msgs => {
+            queue.listen({ MaxNumberOfMessages: 1 }, msgs => {
                 expect(msgs).to.be.an.instanceof(Array);
 
                 const expected = msgs.filter(msg => {
@@ -39,7 +57,9 @@ describe('SQS', function() {
                 expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message);
                 expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
 
-                done();
+                expected[0].delete(response => {
+                    done();
+                });
             });
 
             myMessage.send();
