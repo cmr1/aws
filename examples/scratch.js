@@ -9,7 +9,7 @@ const ecs = new ECS({
 });
 
 // ecs.getTaskDefinitions(taskDefinitions => {
-// 	console.log(taskDefinitions);
+// 	console.log(`Found ${taskDefinitions.length} task definition(s)`);
 // });
 
 ecs.getClusters(clusters => {
