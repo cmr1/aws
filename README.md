@@ -6,5 +6,3 @@ NodeJS AWS service helper classes
 
 ## Information
 Coming soon!
-
-
