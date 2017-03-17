@@ -6,3 +6,13 @@ NodeJS AWS service helper classes
 
 ## Information
 Coming soon!
+
+
+## Vague Roadmap
+
+* SNS
+* RDS
+* DynamoDB
+* CodePipeline
+* Lambda
+* ...
