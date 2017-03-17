@@ -7,6 +7,25 @@ const { ECS } = require('../../');
 
 describe('ECS', function() {
     const ecs = new ECS();
+    const clusterName = 'cmr1-aws-test-' + Date.now().toString();
+    let cluster = null;
+
+    before(function(done) {
+        ecs.newCluster({ clusterName }, objCluster => {
+            if (objCluster) {
+                cluster = objCluster;
+                done();
+            } else {
+                done('Unable to create/load cluster: ' + clusterName);
+            }
+        });
+    });
+
+    after(function(done) {
+        cluster.delete(resp => {
+            done();
+        });
+    });
 
     it('should exist', function() {
         expect(ECS).to.exist;
@@ -43,26 +62,6 @@ describe('ECS', function() {
     });
 
     describe('Cluster', function() {
-        const clusterName = 'cmr1-aws-test-' + Date.now().toString();
-        let cluster = null;
-
-        before(function(done) {
-            ecs.newCluster({ clusterName }, objCluster => {
-                if (objCluster) {
-                    cluster = objCluster;
-                    done();
-                } else {
-                    done('Unable to create/load cluster: ' + clusterName);
-                }
-            });
-        });
-
-        after(function(done) {
-            cluster.delete(resp => {
-                done();
-            });
-        });
-
         it('instance has supported methods', function() {
             cluster.supportedMethods().forEach(methodConfig => {
                 expect(cluster[methodConfig.method]).to.be.a('function');
@@ -104,5 +103,56 @@ describe('ECS', function() {
                 done();
             });
         });
+    });
+
+    describe('TaskDefinition', function() {
+        const taskDefinitionFamily = 'cmr1-aws-test-' + Date.now().toString();
+        let taskDefinition = null;
+
+        before(function(done) {
+            const params = {
+                family: taskDefinitionFamily,
+                containerDefinitions: [
+                    {
+                        name: taskDefinitionFamily,
+                        image: 'hello-world',
+                        cpu: 128,
+                        memory: 128
+                    }
+                ]
+            };
+
+            ecs.newTaskDefinition(params, objTaskDefinition => {
+                if (objTaskDefinition) {
+                    taskDefinition = objTaskDefinition;
+                    done();
+                } else {
+                    done('Unable to create/revision task definition: ' + taskDefinitionFamily);
+                }
+            });
+        });
+
+        after(function(done) {
+            taskDefinition.delete(resp => {
+                done();
+            });
+        });
+
+        it('instance has supported methods', function() {
+            taskDefinition.supportedMethods().forEach(methodConfig => {
+                expect(taskDefinition[methodConfig.method]).to.be.a('function');
+            });
+        });
+
+        
+        // Wait to simulate until EC2 instances are being spun up for cluster...
+
+        // it('should be able to be run by a cluster', function(done) {
+        //     cluster.runTaskDefinition(taskDefinition, tasks => {
+        //         expect(tasks.length).to.be.greaterThan(0);
+
+        //         expect(tasks[0]).to.be.an.instanceof(ECS.Cluster.Task);
+        //     });
+        // });
     });
 });
