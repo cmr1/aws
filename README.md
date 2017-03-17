@@ -3,7 +3,6 @@
 # node-aws (cmr1-aws)
 NodeJS AWS service helper classes
 
-
 ## Information
 Coming soon!
 
