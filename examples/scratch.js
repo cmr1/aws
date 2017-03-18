@@ -2,7 +2,7 @@
 
 const { S3, SQS, Route53, ECS } = require('../lib/services');
 
-ECS.verbose();
+// ECS.verbose();
 
 const ecs = new ECS({
 	region: 'us-east-1'
@@ -16,9 +16,44 @@ const ecs = new ECS({
 // 	});
 // });
 
-ecs.getTaskDefinitions({ maxResults: 2 }, taskDefinitions => {
-	console.log(`Found ${taskDefinitions.length} task definition(s)`);
+ecs.newCluster({ clusterName: 'bowtie-v1-test' }, cluster => {
+	ecs.getTaskDefinitions({ 
+		maxResults: 1, 
+		familyPrefix: 'family-prefix' 
+	}, taskDefinitions => {
+		console.log(`Found ${taskDefinitions.length} task definition(s)`);
+
+		taskDefinitions[0].run({
+			cluster: cluster.clusterName,
+			count: 1,
+			group: 'task-group',
+			startedBy: 'cmr1-aws',
+			overrides: {
+				taskRoleArn: 'arn:aws:iam::ACCOUNT_ID:role/ecs-task-role',
+				containerOverrides: [
+					{
+						name: 'container name',
+						environment: [
+							{
+								name: 'ENV_VAR',
+								value: 'something'
+							}
+						]
+					}
+				]
+			}
+		}, task => {
+
+			console.log(task);
+		});
+
+		// cluster.runTaskDefinition(taskDefinitions[0], task => {
+		// 	console.log(task);
+		// });
+	});
 });
+
+
 
 // ecs.getClusters(clusters => {
 // 	// console.log(clusters);
