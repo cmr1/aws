@@ -1,57 +1,93 @@
 'use strict';
 
-const { S3, SQS, Route53, ECS } = require('../lib/services');
+const fs = require('fs');
 
-// ECS.verbose();
+const { S3, SQS, Route53, ECS, ACM } = require('../lib/services');
 
-const ecs = new ECS({
+const acm = new ACM({
 	region: 'us-east-1'
 });
 
-// ecs.newCluster({ clusterName: 'testing-auto' }, cluster => {
-// 	console.log(cluster);
+acm.getCertByDomain('dev.api.quantum.autodesk.com', cert => {
+	console.log(cert);
 
-// 	cluster.delete(response => {
-// 		console.log(`Deleted cluster: ${cluster.clusterName}`, response);
-// 	});
-// });
+	cert.update({
+		Certificate: fs.readFileSync('cert.pem'), /* required */
+		PrivateKey: fs.readFileSync('privkey.pem'), /* required */
+		CertificateChain: fs.readFileSync('fullchain.pem')
+	}, response => {
+		console.log(response);
 
-ecs.newCluster({ clusterName: 'bowtie-v1-test' }, cluster => {
-	ecs.getTaskDefinitions({ 
-		maxResults: 1, 
-		familyPrefix: 'family-prefix' 
-	}, taskDefinitions => {
-		console.log(`Found ${taskDefinitions.length} task definition(s)`);
-
-		taskDefinitions[0].run({
-			cluster: cluster.clusterName,
-			count: 1,
-			group: 'task-group',
-			startedBy: 'cmr1-aws',
-			overrides: {
-				taskRoleArn: 'arn:aws:iam::ACCOUNT_ID:role/ecs-task-role',
-				containerOverrides: [
-					{
-						name: 'container name',
-						environment: [
-							{
-								name: 'ENV_VAR',
-								value: 'something'
-							}
-						]
-					}
-				]
-			}
-		}, task => {
-
-			console.log(task);
+		acm.getCertificates(response => {
+			console.log(response);
 		});
-
-		// cluster.runTaskDefinition(taskDefinitions[0], task => {
-		// 	console.log(task);
-		// });
 	});
 });
+
+
+
+// var params = {
+//   Certificate: fs.readFileSync('cert.pem'), /* required */
+//   PrivateKey: fs.readFileSync('privkey.pem'), /* required */
+// //   CertificateArn: 'STRING_VALUE',
+//   CertificateChain: fs.readFileSync('fullchain.pem')
+// };
+
+// acm.importCertificate(params, function(err, data) {
+//   if (err) console.log(err, err.stack); // an error occurred
+//   else     console.log(data);           // successful response
+// });
+
+// ECS.verbose();
+
+// const ecs = new ECS({
+// 	region: 'us-east-1'
+// });
+
+// // ecs.newCluster({ clusterName: 'testing-auto' }, cluster => {
+// // 	console.log(cluster);
+
+// // 	cluster.delete(response => {
+// // 		console.log(`Deleted cluster: ${cluster.clusterName}`, response);
+// // 	});
+// // });
+
+// ecs.newCluster({ clusterName: 'bowtie-v1-test' }, cluster => {
+// 	ecs.getTaskDefinitions({ 
+// 		maxResults: 1, 
+// 		familyPrefix: 'family-prefix' 
+// 	}, taskDefinitions => {
+// 		console.log(`Found ${taskDefinitions.length} task definition(s)`);
+
+// 		taskDefinitions[0].run({
+// 			cluster: cluster.clusterName,
+// 			count: 1,
+// 			group: 'task-group',
+// 			startedBy: 'cmr1-aws',
+// 			overrides: {
+// 				taskRoleArn: 'arn:aws:iam::ACCOUNT_ID:role/ecs-task-role',
+// 				containerOverrides: [
+// 					{
+// 						name: 'container name',
+// 						environment: [
+// 							{
+// 								name: 'ENV_VAR',
+// 								value: 'something'
+// 							}
+// 						]
+// 					}
+// 				]
+// 			}
+// 		}, task => {
+
+// 			console.log(task);
+// 		});
+
+// 		// cluster.runTaskDefinition(taskDefinitions[0], task => {
+// 		// 	console.log(task);
+// 		// });
+// 	});
+// });
 
 
 

@@ -7,3 +7,4 @@ node_modules
 tmp
 ignore
 npm-debug.log
+*.pem
