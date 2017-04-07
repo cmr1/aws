@@ -8,20 +8,14 @@ const acm = new ACM({
 	region: 'us-east-1'
 });
 
-acm.getCertByDomain('dev.api.quantum.autodesk.com', cert => {
-	console.log(cert);
-
-	cert.update({
+const certData = {
 		Certificate: fs.readFileSync('cert.pem'), /* required */
 		PrivateKey: fs.readFileSync('privkey.pem'), /* required */
 		CertificateChain: fs.readFileSync('fullchain.pem')
-	}, response => {
-		console.log(response);
+	};
 
-		acm.getCertificates(response => {
-			console.log(response);
-		});
-	});
+acm.createOrUpdateCert('dev.api.quantum.autodesk.com', certData, cert => {
+	console.log(cert);
 });
 
 
