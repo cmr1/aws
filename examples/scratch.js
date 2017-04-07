@@ -5,7 +5,7 @@ const fs = require('fs');
 const { S3, SQS, Route53, ECS, ACM } = require('../lib/services');
 
 const acm = new ACM({
-	region: 'us-east-1'
+	region: process.env.AWS_DEFAULT_REGION || 'us-east-1'
 });
 
 const certData = {
@@ -14,7 +14,7 @@ const certData = {
 		CertificateChain: fs.readFileSync('fullchain.pem')
 	};
 
-acm.createOrUpdateCert('dev.api.quantum.autodesk.com', certData, cert => {
+acm.createOrUpdateCert('acm.test.aws.cmr1.com', certData, cert => {
 	console.log(cert);
 });
 
