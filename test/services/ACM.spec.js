@@ -77,17 +77,17 @@ describe('ACM', function () {
         // });
 
         after(function (done) {
-            acm.getCertificates(certs => {
-                async.each(certs, (cert, next) => {
-                    expect(cert).to.be.an.instanceof(ACM.Certificate);
+            // acm.getCertificates(certs => {
+            //     async.each(certs, (cert, next) => {
+            //         expect(cert).to.be.an.instanceof(ACM.Certificate);
 
-                    cert.delete(next);
-                }, err => {
-                    expect(err).to.be.empty;
+            //         cert.delete(next);
+            //     }, err => {
+            //         expect(err).to.be.empty;
 
-                    done();
-                });
-            });
+            //         done();
+            //     });
+            // });
         });
     });
 
