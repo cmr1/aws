@@ -24,7 +24,8 @@
   "dependencies": {
     "async": "^2.1.4",
     "aws-sdk": "^2.7.21",
-    "colors": "^1.1.2"
+    "colors": "^1.1.2",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

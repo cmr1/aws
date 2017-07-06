@@ -1,22 +1,38 @@
 'use strict';
 
 const fs = require('fs');
+const uuid = require('uuid');
 
 const { S3, SQS, Route53, ECS, ACM } = require('../lib/services');
 
-const acm = new ACM({
-	region: process.env.AWS_DEFAULT_REGION || 'us-east-1'
+const r53 = new Route53();
+
+const params = {
+	Name: 'somethingfancy-bowtie.io',
+	CallerReference: uuid.v1()
+};
+
+r53.createZone(params, zone => {
+	console.log(zone);
+
+	zone.delete(resp => {
+		console.log(resp);
+	});
 });
 
-const certData = {
-		Certificate: fs.readFileSync('cert.pem'), /* required */
-		PrivateKey: fs.readFileSync('privkey.pem'), /* required */
-		CertificateChain: fs.readFileSync('fullchain.pem')
-	};
+// const acm = new ACM({
+// 	region: process.env.AWS_DEFAULT_REGION || 'us-east-1'
+// });
 
-acm.createOrUpdateCert('acm.test.aws.cmr1.com', certData, cert => {
-	console.log(cert);
-});
+// const certData = {
+// 		Certificate: fs.readFileSync('cert.pem'), /* required */
+// 		PrivateKey: fs.readFileSync('privkey.pem'), /* required */
+// 		CertificateChain: fs.readFileSync('fullchain.pem')
+// 	};
+
+// acm.createOrUpdateCert('acm.test.aws.cmr1.com', certData, cert => {
+// 	console.log(cert);
+// });
 
 
 
