@@ -1,5 +1,6 @@
 'use strict';
 
+const uuid = require('uuid');
 const expect = require('chai').expect;
 
 // Require Route53 AWSService Class
@@ -15,6 +16,31 @@ describe('Route53', function() {
     it('instance has supported methods', function() {
         r53.supportedMethods().forEach(methodConfig => {
             expect(r53[methodConfig.method]).to.be.a('function');
+        });
+    });
+
+    it('should be able to create and delete zones', function(done) {
+        this.timeout(10000);
+
+        r53.getZoneCount(startingCount => {
+            expect(startingCount).to.be.a('number');
+            expect(startingCount).to.be.at.least(0);
+
+            r53.createZone({
+                Name: 'route53.aws.test.cmr1.com',
+                CallerReference: uuid.v1()
+            }, zone => {
+                expect(zone).to.be.an.instanceof(Route53.Zone);
+
+                zone.delete(resp => {
+                    expect(resp.ChangeInfo).to.exist;
+
+                    r53.getZoneCount(endingCount => {
+                        expect(endingCount).to.equal(startingCount);
+                        done();
+                    });
+                });
+            })
         });
     });
 
