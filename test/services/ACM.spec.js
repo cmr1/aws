@@ -10,6 +10,7 @@ const { ACM } = require('../../');
 
 describe('ACM', function () {
     const acm = new ACM();
+    let certCount = 0;
 
     it('should exist', function () {
         expect(ACM).to.exist;
@@ -24,7 +25,9 @@ describe('ACM', function () {
     it('should be able to get certificates', function (done) {
         acm.getCertificates(certs => {
             expect(certs).to.be.an('array');
-            expect(certs.length).to.equal(0);
+            expect(certs.length).to.be.at.least(0);
+
+            certCount = certs.length;
 
             done();
         });
@@ -94,7 +97,7 @@ describe('ACM', function () {
     after(function (done) {
         acm.getCertificates(certs => {
             expect(certs).to.be.an('array');
-            expect(certs.length).to.equal(0);
+            expect(certs.length).to.equal(certCount);
 
             done();
         });
