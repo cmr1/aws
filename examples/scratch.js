@@ -5,20 +5,33 @@ const uuid = require('uuid')
 
 const { S3, SQS, Route53, ECS, ACM } = require('../lib/services')
 
-const r53 = new Route53()
+const sqs = new SQS()
 
-const params = {
-  Name: 'somethingfancy-bowtie.io',
-  CallerReference: uuid.v1()
+const run = async () => {
+  const queue = await sqs.getQueue({ QueueName: 'test-queue' })
+  console.log('queue', queue)
+
+  const msgs = await queue.listen({})
+
+  console.log('msgs', msgs)
 }
 
-r53.createZone(params, zone => {
-  console.log(zone)
+run()
 
-  zone.delete(resp => {
-    console.log(resp)
-  })
-})
+// const r53 = new Route53()
+
+// const params = {
+//   Name: 'somethingfancy-bowtie.io',
+//   CallerReference: uuid.v1()
+// }
+
+// r53.createZone(params, zone => {
+//   console.log(zone)
+
+//   zone.delete(resp => {
+//     console.log(resp)
+//   })
+// })
 
 // const acm = new ACM({
 // 	region: process.env.AWS_DEFAULT_REGION || 'us-east-1'
