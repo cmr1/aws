@@ -1,68 +1,67 @@
-'use strict';
+'use strict'
 
-const expect = require('chai').expect;
+const expect = require('chai').expect
 
 // Require SQS AWSService Class
-const { SQS } = require('../../');
+const { SQS } = require('../../')
 
+describe('SQS', function () {
+  const sqs = new SQS()
 
-describe('SQS', function() {
-    const sqs = new SQS();
+  const queueParams = {
+    QueueName: 'cmr1-aws-mocha-test'
+  }
 
-    const queueParams = {
-        QueueName: 'cmr1-aws-mocha-test'
-    };
+  it('should exist', function () {
+    expect(SQS).to.exist
+  })
 
-    it('should exist', function() {
-        expect(SQS).to.exist;
-    });
+  describe('Queue', function () {
+    const queueName = 'cmr1-aws-test-' + Date.now().toString()
+    let queue = null
 
-    describe('Queue', function() {
-        const queueName = 'cmr1-aws-test-' + Date.now().toString();
-        let queue = null;
+    before(function (done) {
+      sqs.getQueue({ QueueName: queueName }, objQueue => {
+        if (objQueue) {
+          queue = objQueue
+          done()
+        } else {
+          done('Unable to create/load queue: ' + queueName)
+        }
+      })
+    })
 
-        before(function(done) {
-            sqs.getQueue({ QueueName: queueName }, objQueue => {
-                if (objQueue) {
-                    queue = objQueue;
-                    done();
-                } else {
-                    done('Unable to create/load queue: ' + queueName);
-                }
-            });
-        });
+    after(function (done) {
+      queue.delete(resp => {
+        done()
+      })
+    })
 
-        after(function(done) {
-            queue.delete(resp => {
-                done();
-            });
-        });
-        
-        it('should be able to send & receive messages', function(done) {
-            const msgBody = 'This is a test message';
-            
-            const myMessage = queue.newMessage({
-                Body: msgBody
-            });
+    it('should be able to send & receive messages', function (done) {
+      const msgBody = 'This is a test message'
 
-            queue.listen({ MaxNumberOfMessages: 1 }, msgs => {
-                expect(msgs).to.be.an.instanceof(Array);
+      const myMessage = queue.newMessage({
+        Body: msgBody
+      })
 
-                const expected = msgs.filter(msg => {
-                    return msg.Body === msgBody
-                });
+      queue.listen({ MaxNumberOfMessages: 1 }, msgs => {
+        expect(msgs).to.be.an.instanceof(Array)
 
-                expect(expected).to.have.length.above(0);
+        const expected = msgs.filter(msg => {
+          return msg.Body === msgBody
+        })
 
-                expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message);
-                expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
+        expect(expected).to.have.length.above(0)
 
-                expected[0].delete(response => {
-                    done();
-                });
-            });
+        expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message)
+        expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
 
-            myMessage.send();
-        });
-    });
-});
+        expected[0].delete(response => {
+          done()
+        })
+      })
+
+      myMessage.send()
+    })
+  })
+})
