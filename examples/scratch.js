@@ -1,24 +1,24 @@
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const uuid = require('uuid');
+const fs = require('fs')
+const uuid = require('uuid')
 
-const { S3, SQS, Route53, ECS, ACM } = require('../lib/services');
+const { S3, SQS, Route53, ECS, ACM } = require('../lib/services')
 
-const r53 = new Route53();
+const r53 = new Route53()
 
 const params = {
-	Name: 'somethingfancy-bowtie.io',
-	CallerReference: uuid.v1()
-};
+  Name: 'somethingfancy-bowtie.io',
+  CallerReference: uuid.v1()
+}
 
 r53.createZone(params, zone => {
-	console.log(zone);
+  console.log(zone)
 
-	zone.delete(resp => {
-		console.log(resp);
-	});
-});
+  zone.delete(resp => {
+    console.log(resp)
+  })
+})
 
 // const acm = new ACM({
 // 	region: process.env.AWS_DEFAULT_REGION || 'us-east-1'
@@ -33,8 +33,6 @@ r53.createZone(params, zone => {
 // acm.createOrUpdateCert('acm.test.aws.cmr1.com', certData, cert => {
 // 	console.log(cert);
 // });
-
-
 
 // var params = {
 //   Certificate: fs.readFileSync('cert.pem'), /* required */
@@ -63,9 +61,9 @@ r53.createZone(params, zone => {
 // // });
 
 // ecs.newCluster({ clusterName: 'bowtie-v1-test' }, cluster => {
-// 	ecs.getTaskDefinitions({ 
-// 		maxResults: 1, 
-// 		familyPrefix: 'family-prefix' 
+// 	ecs.getTaskDefinitions({
+// 		maxResults: 1,
+// 		familyPrefix: 'family-prefix'
 // 	}, taskDefinitions => {
 // 		console.log(`Found ${taskDefinitions.length} task definition(s)`);
 
@@ -98,8 +96,6 @@ r53.createZone(params, zone => {
 // 		// });
 // 	});
 // });
-
-
 
 // ecs.getClusters(clusters => {
 // 	// console.log(clusters);
@@ -166,7 +162,7 @@ r53.createZone(params, zone => {
 
 // 		recordSet.upsert(resp => {
 // 			Route53.log('Upserted record set!');
-		
+
 // 			recordSet.delete(resp => {
 // 				Route53.log('Deleted record set!');
 // 			});
