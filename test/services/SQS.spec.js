@@ -37,31 +37,56 @@ describe('SQS', function () {
       })
     })
 
-    it('should be able to send & receive messages', function (done) {
+    it('should be able to send & receive messages', async function () {
       const msgBody = 'This is a test message'
 
       const myMessage = queue.newMessage({
         Body: msgBody
       })
 
-      queue.listen({ MaxNumberOfMessages: 1 }, msgs => {
-        expect(msgs).to.be.an.instanceof(Array)
+      await myMessage.send()
 
-        const expected = msgs.filter(msg => {
-          return msg.Body === msgBody
-        })
+      const msgs = await queue.listen({ MaxNumberOfMessages: 1 })
 
-        expect(expected).to.have.length.above(0)
+      expect(msgs).to.be.an.instanceof(Array)
 
-        expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message)
-        expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
-
-        expected[0].delete(response => {
-          done()
-        })
+      const expected = msgs.filter(msg => {
+        return msg.Body === msgBody
       })
 
-      myMessage.send()
+      expect(expected).to.have.length.above(0)
+
+      expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message)
+      expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
+
+      await expected[0].delete()
     })
+
+    // it('should be able to poll for messages', function (done) {
+    //   const msgBody = 'This is a test message'
+
+    //   const myMessage = queue.newMessage({
+    //     Body: msgBody
+    //   })
+
+    //   queue.listen({ MaxNumberOfMessages: 1 }, msgs => {
+    //     expect(msgs).to.be.an.instanceof(Array)
+
+    //     const expected = msgs.filter(msg => {
+    //       return msg.Body === msgBody
+    //     })
+
+    //     expect(expected).to.have.length.above(0)
+
+    //     expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message)
+    //     expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
+
+    //     expected[0].delete(response => {
+    //       done()
+    //     })
+    //   })
+
+    //   myMessage.send()
+    // })
   })
 })
