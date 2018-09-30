@@ -7,12 +7,10 @@ const { SES } = require('../../')
 describe('SES', function () {
   let ses = null
 
-  before(function (done) {
+  before(function () {
     ses = new SES()
 
     expect(ses).to.be.an.instanceof(SES)
-
-    done()
   })
 
   it('should exist', function () {
@@ -30,87 +28,65 @@ describe('SES', function () {
     const body = 'This is a message. <strong>With HTML</strong>'
     const bodyType = 'html'
 
-    before(function (done) {
+    before(function () {
       email = ses.newEmail()
 
       expect(email).to.be.an.instanceof(SES.Email)
-
-      done()
     })
 
-    it('should be able to set "to"', function (done) {
+    it('should be able to set "to"', function () {
       email.setTo(to)
 
       expect(email._to.length).to.equal(1)
-
       expect(email._to[0]).to.equal(to)
-
-      done()
     })
 
-    it('should be able to set "cc"', function (done) {
+    it('should be able to set "cc"', function () {
       email.setCc(cc)
 
       expect(email._cc.length).to.equal(1)
-
       expect(email._cc[0]).to.equal(cc)
-
-      done()
     })
 
-    it('should be able to set "bcc"', function (done) {
+    it('should be able to set "bcc"', function () {
       email.setBcc(bcc)
 
       expect(email._bcc.length).to.equal(1)
-
       expect(email._bcc[0]).to.equal(bcc)
-
-      done()
     })
 
-    it('should be able to set "from"', function (done) {
+    it('should be able to set "from"', function () {
       email.setFrom(from)
 
       expect(email._from).to.equal(from)
-
-      done()
     })
 
-    it('should be able to set "replyTo"', function (done) {
+    it('should be able to set "replyTo"', function () {
       email.setReplyTo(replyTo)
 
       expect(email._replyTo.length).to.equal(1)
-
       expect(email._replyTo[0]).to.equal(replyTo)
-
-      done()
     })
 
-    it('should be able to set "subject"', function (done) {
+    it('should be able to set "subject"', function () {
       email.setSubject(subject)
 
       expect(email._subject).to.equal(subject)
-
-      done()
     })
 
-    it('should be able to set "body"', function (done) {
+    it('should be able to set "body"', function () {
       email.setBody(body)
 
       expect(email._body).to.equal(body)
-
-      done()
     })
 
-    it('should be able to set "bodyType"', function (done) {
+    it('should be able to set "bodyType"', function () {
       email.setFrom(bodyType)
 
       expect(email._bodyType).to.equal(bodyType)
-
-      done()
     })
 
-    after(function (done) {
+    after(function () {
       const data = {
         Source: from,
         Destination: {
@@ -132,8 +108,6 @@ describe('SES', function () {
       }
 
       expect(email.getMessageData()).to.eql(data)
-
-      done()
     })
   })
 })

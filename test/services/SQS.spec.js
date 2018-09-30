@@ -8,33 +8,20 @@ const { SQS } = require('../../')
 describe('SQS', function () {
   const sqs = new SQS()
 
-  const queueParams = {
-    QueueName: 'cmr1-aws-mocha-test'
-  }
-
   it('should exist', function () {
     expect(SQS).to.exist
   })
 
   describe('Queue', function () {
-    const queueName = 'cmr1-aws-test-' + Date.now().toString()
+    const QueueName = 'cmr1-aws-test-' + Date.now().toString()
     let queue = null
 
-    before(function (done) {
-      sqs.getQueue({ QueueName: queueName }, objQueue => {
-        if (objQueue) {
-          queue = objQueue
-          done()
-        } else {
-          done('Unable to create/load queue: ' + queueName)
-        }
-      })
+    before(async function () {
+      queue = await sqs.getQueue({ QueueName })
     })
 
-    after(function (done) {
-      queue.delete(resp => {
-        done()
-      })
+    after(async function () {
+      await queue.delete()
     })
 
     it('should be able to send & receive messages', async function () {
@@ -62,31 +49,36 @@ describe('SQS', function () {
       await expected[0].delete()
     })
 
-    // it('should be able to poll for messages', function (done) {
-    //   const msgBody = 'This is a test message'
+    // it('should be able to poll for messages', async function () {
+    //   const messageCount = Math.ceil(Math.random() * 10)
+    //   let sentCount = 0
+    //   let receivedCount = 0
 
-    //   const myMessage = queue.newMessage({
-    //     Body: msgBody
+    //   queue.poll(async (msg, next) => {
+    //     expect(msg).to.be.an.instanceof(SQS.Queue.Message)
+    //     expect(msg.parsed).to.be.an('object')
+    //     expect(msg.parsed.i).to.be.a('number')
+    //     expect(msg.parsed.i).to.be.at.least(0)
+    //     expect(msg.parsed.i).to.be.at.most(messageCount - 1)
+
+    //     await msg.delete()
+
+    //     receivedCount++
+
+    //     next()
     //   })
 
-    //   queue.listen({ MaxNumberOfMessages: 1 }, msgs => {
-    //     expect(msgs).to.be.an.instanceof(Array)
+    //   for (let i = 0; i < messageCount; i++) {
+    //     const msg = await queue.sendMessage({ i })
 
-    //     const expected = msgs.filter(msg => {
-    //       return msg.Body === msgBody
-    //     })
+    //     expect(msg).to.be.an.instanceof(SQS.Queue.Message)
+    //     expect(msg.MessageId).to.be.a('string')
 
-    //     expect(expected).to.have.length.above(0)
+    //     sentCount++
+    //   }
 
-    //     expect(expected[0]).to.be.an.instanceof(SQS.Queue.Message)
-    //     expect(expected[0].toString()).to.match(/\[[^\]]+\] - '.+'/)
-
-    //     expected[0].delete(response => {
-    //       done()
-    //     })
-    //   })
-
-    //   myMessage.send()
+    //   expect(sentCount).to.equal(messageCount)
+    //   expect(receivedCount).to.equal(messageCount)
     // })
   })
 })

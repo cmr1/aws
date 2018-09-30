@@ -22,15 +22,13 @@ describe('ACM', function () {
     })
   })
 
-  it('should be able to get certificates', function (done) {
-    acm.getCertificates(certs => {
-      expect(certs).to.be.an('array')
-      expect(certs.length).to.be.at.least(0)
+  it('should be able to get certificates', async function () {
+    const certs = await acm.getCertificates()
 
-      certCount = certs.length
+    expect(certs).to.be.an('array')
+    expect(certs.length).to.be.at.least(0)
 
-      done()
-    })
+    certCount = certs.length
   })
 
   describe('Certificate', function () {
@@ -94,12 +92,10 @@ describe('ACM', function () {
     })
   })
 
-  after(function (done) {
-    acm.getCertificates(certs => {
-      expect(certs).to.be.an('array')
-      expect(certs.length).to.equal(certCount)
+  after(async function () {
+    const certs = await acm.getCertificates()
 
-      done()
-    })
+    expect(certs).to.be.an('array')
+    expect(certs.length).to.equal(certCount)
   })
 })

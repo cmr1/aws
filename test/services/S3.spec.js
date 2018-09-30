@@ -18,31 +18,30 @@ describe('S3', function () {
     })
   })
 
-  it('should be able to get buckets', function (done) {
-    s3.getBuckets(buckets => {
-      expect(buckets).to.be.an.instanceof(Array)
+  it('should be able to get buckets', async function () {
+    const buckets = await s3.getBuckets()
 
-      if (buckets.length > 0) {
-        expect(buckets[0]).to.be.an.instanceof(S3.Bucket)
-      }
+    expect(buckets).to.be.an.instanceof(Array)
 
-      done()
-    })
+    if (buckets.length > 0) {
+      expect(buckets[0]).to.be.an.instanceof(S3.Bucket)
+    }
   })
 
   describe('Bucket', function () {
     let bucket = null
 
-    before(function (done) {
-      s3.getBuckets(buckets => {
-        if (buckets.length > 0) {
-          bucket = buckets[0]
-        }
+    before(async function () {
+      const buckets = await s3.getBuckets()
 
-        expect(bucket).to.exist
+      expect(buckets).to.be.an.instanceof(Array)
 
-        done()
-      })
+      if (buckets.length > 0) {
+        bucket = buckets[0]
+      }
+
+      expect(bucket).to.exist
+      expect(bucket).to.be.an.instanceof(S3.Bucket)
     })
 
     it('instance has supported methods', function () {
@@ -51,10 +50,14 @@ describe('S3', function () {
       })
     })
 
-    it('should be able to get a list of items', function () {
-      bucket.getItems(items => {
+    it('should be able to get a list of items', async function () {
+      const items = await bucket.getItems()
 
-      })
+      expect(items).to.be.an.instanceof(Array)
+
+      if (items.length > 0) {
+        expect(items[0]).to.be.an.instanceof(S3.Bucket.Item)
+      }
     })
   })
 })
