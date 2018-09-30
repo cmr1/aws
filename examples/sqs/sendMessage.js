@@ -3,7 +3,7 @@ const { SQS } = require('../../lib/services')
 const sqs = new SQS()
 
 const QueueName = 'test-queue'
-const MessageCount = 1000
+const MessageCount = 10
 
 const run = async () => {
   const queue = await sqs.getQueue({ QueueName })

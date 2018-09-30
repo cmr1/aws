@@ -18,14 +18,14 @@ const run = async () => {
 
     const sleep = msg.parsed.sleep || Math.ceil(Math.random() * 10000)
 
-    // SQS.log(prefix, `Sleeping for ${sleep} ms ...`)
+    SQS.log(prefix, `Sleeping for ${sleep} ms ...`)
 
     setTimeout(() => {
-      // SQS.log(prefix, `Done sleeping for ${sleep} ms! Deleting message ...`)
+      SQS.log(prefix, `Done sleeping for ${sleep} ms! Deleting message ...`)
       msg.delete().then(() => {
         const end = Date.now()
         const dur = (end - start) / 1000
-        // SQS.log(prefix, `Finished in ${dur}s`)
+        SQS.log(prefix, `Finished in ${dur}s`)
         SQS.debug('Deleted msg:', msg.parsed)
         next()
       }).catch(next)
