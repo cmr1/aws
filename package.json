@@ -15,7 +15,7 @@
     "postversion": "git push --follow-tags"
   },
   "engines": {
-    "node": ">=6.x"
+    "node": ">=8.x"
   },
   "author": "Charlie McClung",
   "license": "MIT",
