@@ -7,8 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "pretest": "node hooks/pre-test.js --force",
+    "pretest": "npm run lint && npm audit && node hooks/pre-test.js --force",
     "test": "mocha test/**/*.spec.js",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
     "preversion": "npm test && travis lint .travis.yml",
     "postversion": "git push --follow-tags"
   },
@@ -34,5 +36,12 @@
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
     "replace": "^1.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "examples/*",
+      "hooks/",
+      "test/*"
+    ]
   }
 }
