@@ -1,105 +1,101 @@
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const path = require('path');
-const async = require('async');
-const expect = require('chai').expect;
+const fs = require('fs')
+const path = require('path')
+const async = require('async')
+const expect = require('chai').expect
 
 // Require ACM AWSService Class
-const { ACM } = require('../../');
+const { ACM } = require('../../')
 
 describe('ACM', function () {
-    const acm = new ACM();
-    let certCount = 0;
+  const acm = new ACM()
+  let certCount = 0
 
-    it('should exist', function () {
-        expect(ACM).to.exist;
-    });
+  it('should exist', function () {
+    expect(ACM).to.exist
+  })
 
-    it('instance has supported methods', function () {
-        acm.supportedMethods().forEach(methodConfig => {
-            expect(acm[methodConfig.method]).to.be.a('function');
-        });
-    });
+  it('instance has supported methods', function () {
+    acm.supportedMethods().forEach(methodConfig => {
+      expect(acm[methodConfig.method]).to.be.a('function')
+    })
+  })
 
-    it('should be able to get certificates', function (done) {
-        acm.getCertificates(certs => {
-            expect(certs).to.be.an('array');
-            expect(certs.length).to.be.at.least(0);
+  it('should be able to get certificates', async function () {
+    const certs = await acm.getCertificates()
 
-            certCount = certs.length;
+    expect(certs).to.be.an('array')
+    expect(certs.length).to.be.at.least(0)
 
-            done();
-        });
-    });
+    certCount = certs.length
+  })
 
-    describe('Certificate', function () {
-        let cert = null;
-        const certDomain = 'acm.test.aws.cmr1.com';
-        const certData = {
-            Certificate: fs.readFileSync(path.join(__dirname, '..', 'certs', 'cert.pem')), /* required */
-            PrivateKey: fs.readFileSync(path.join(__dirname, '..', 'certs', 'privkey.pem')), /* required */
-            CertificateChain: fs.readFileSync(path.join(__dirname, '..', 'certs', 'chain.pem'))
-        };
+  describe('Certificate', function () {
+    let cert = null
+    const certDomain = 'acm.test.aws.cmr1.com'
+    const certData = {
+      Certificate: fs.readFileSync(path.join(__dirname, '..', 'certs', 'cert.pem')), /* required */
+      PrivateKey: fs.readFileSync(path.join(__dirname, '..', 'certs', 'privkey.pem')), /* required */
+      CertificateChain: fs.readFileSync(path.join(__dirname, '..', 'certs', 'chain.pem'))
+    }
 
-        before(function (done) {
-            done();
-            
-            // acm.createCertificate(certData, objCert => {
-            //     expect(objCert).to.be.an.instanceOf(ACM.Certificate);
+    before(function (done) {
+      done()
 
-            //     done();
-            // });
-        });
+      // acm.createCertificate(certData, objCert => {
+      //     expect(objCert).to.be.an.instanceOf(ACM.Certificate);
 
-        // it('should be able to update an existing cert', function (done) {
-        //     acm.createOrUpdateCert(certDomain, certData, cert => {
-        //         expect(cert).to.be.an.instanceOf(ACM.Certificate);
+      //     done();
+      // });
+    })
 
-        //         done();
-        //     });
-        // });
+    // it('should be able to update an existing cert', function (done) {
+    //     acm.createOrUpdateCert(certDomain, certData, cert => {
+    //         expect(cert).to.be.an.instanceOf(ACM.Certificate);
 
-        // it('should be able to create another cert', function (done) {
-        //     acm.createCertificate(certData, cert => {
-        //         expect(cert).to.be.an.instanceOf(ACM.Certificate);
+    //         done();
+    //     });
+    // });
 
-        //         acm.getCertificates(certs => {
-        //             expect(certs).to.be.an('array');
-        //             expect(certs.length).to.greaterThan(1);
+    // it('should be able to create another cert', function (done) {
+    //     acm.createCertificate(certData, cert => {
+    //         expect(cert).to.be.an.instanceOf(ACM.Certificate);
 
-        //             done();
-        //         });
-        //     });
-        // });
+    //         acm.getCertificates(certs => {
+    //             expect(certs).to.be.an('array');
+    //             expect(certs.length).to.greaterThan(1);
 
-        // it('should be able to delete an existing cert', function (done) {
-        //     expect(cert).to.be.an.instanceof(ACM.Certificate);
+    //             done();
+    //         });
+    //     });
+    // });
 
-        //     cert.delete(done);
-        // });
+    // it('should be able to delete an existing cert', function (done) {
+    //     expect(cert).to.be.an.instanceof(ACM.Certificate);
 
-        after(function (done) {
-            // acm.getCertificates(certs => {
-            //     async.each(certs, (cert, next) => {
-            //         expect(cert).to.be.an.instanceof(ACM.Certificate);
-
-            //         cert.delete(next);
-            //     }, err => {
-            //         expect(err).to.be.empty;
-
-            //         done();
-            //     });
-            // });
-        });
-    });
+    //     cert.delete(done);
+    // });
 
     after(function (done) {
-        acm.getCertificates(certs => {
-            expect(certs).to.be.an('array');
-            expect(certs.length).to.equal(certCount);
+      // acm.getCertificates(certs => {
+      //     async.each(certs, (cert, next) => {
+      //         expect(cert).to.be.an.instanceof(ACM.Certificate);
 
-            done();
-        });
-    });
-});
+      //         cert.delete(next);
+      //     }, err => {
+      //         expect(err).to.be.empty;
+
+      //         done();
+      //     });
+      // });
+    })
+  })
+
+  after(async function () {
+    const certs = await acm.getCertificates()
+
+    expect(certs).to.be.an('array')
+    expect(certs.length).to.equal(certCount)
+  })
+})

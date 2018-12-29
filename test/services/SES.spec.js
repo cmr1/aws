@@ -1,140 +1,113 @@
-'use strict';
+'use strict'
 
-const expect = require('chai').expect;
+const expect = require('chai').expect
 
-const { SES } = require('../../');
+const { SES } = require('../../')
 
+describe('SES', function () {
+  let ses = null
 
-describe('SES', function() {
-    let ses = null;
+  before(function () {
+    ses = new SES()
 
-    before(function(done) {
-      ses = new SES();
+    expect(ses).to.be.an.instanceof(SES)
+  })
 
-      expect(ses).to.be.an.instanceof(SES);
+  it('should exist', function () {
+    expect(SES).to.exist
+  })
 
-      done();
-    });
+  describe('Email', function () {
+    let email = null
+    const to = 'to@example.com'
+    const cc = 'cc@example.com'
+    const bcc = 'bcc@example.com'
+    const from = 'noreply@example.com'
+    const replyTo = 'replyto@example.com'
+    const subject = 'Test Email'
+    const body = 'This is a message. <strong>With HTML</strong>'
+    const bodyType = 'html'
 
-    it('should exist', function() {
-        expect(SES).to.exist;
-    });
+    before(function () {
+      email = ses.newEmail()
 
-    describe('Email', function() {
-        let email = null;
-        const to = 'to@example.com';
-        const cc = 'cc@example.com';
-        const bcc = 'bcc@example.com';
-        const from = 'noreply@example.com';
-        const replyTo = 'replyto@example.com';
-        const subject = 'Test Email';
-        const body = 'This is a message. <strong>With HTML</strong>';
-        const bodyType = 'html';
+      expect(email).to.be.an.instanceof(SES.Email)
+    })
 
-        before(function(done) {
-          email = ses.newEmail();
+    it('should be able to set "to"', function () {
+      email.setTo(to)
 
-          expect(email).to.be.an.instanceof(SES.Email);
+      expect(email._to.length).to.equal(1)
+      expect(email._to[0]).to.equal(to)
+    })
 
-          done();
-        });
+    it('should be able to set "cc"', function () {
+      email.setCc(cc)
 
-        it('should be able to set "to"', function(done) {
-          email.setTo(to);
+      expect(email._cc.length).to.equal(1)
+      expect(email._cc[0]).to.equal(cc)
+    })
 
-          expect(email._to.length).to.equal(1);
+    it('should be able to set "bcc"', function () {
+      email.setBcc(bcc)
 
-          expect(email._to[0]).to.equal(to);
+      expect(email._bcc.length).to.equal(1)
+      expect(email._bcc[0]).to.equal(bcc)
+    })
 
-          done();
-        });
+    it('should be able to set "from"', function () {
+      email.setFrom(from)
 
-        it('should be able to set "cc"', function(done) {
-          email.setCc(cc);
+      expect(email._from).to.equal(from)
+    })
 
-          expect(email._cc.length).to.equal(1);
+    it('should be able to set "replyTo"', function () {
+      email.setReplyTo(replyTo)
 
-          expect(email._cc[0]).to.equal(cc);
+      expect(email._replyTo.length).to.equal(1)
+      expect(email._replyTo[0]).to.equal(replyTo)
+    })
 
-          done();
-        });
+    it('should be able to set "subject"', function () {
+      email.setSubject(subject)
 
-        it('should be able to set "bcc"', function(done) {
-          email.setBcc(bcc);
+      expect(email._subject).to.equal(subject)
+    })
 
-          expect(email._bcc.length).to.equal(1);
+    it('should be able to set "body"', function () {
+      email.setBody(body)
 
-          expect(email._bcc[0]).to.equal(bcc);
+      expect(email._body).to.equal(body)
+    })
 
-          done();
-        });
+    it('should be able to set "bodyType"', function () {
+      email.setFrom(bodyType)
 
-        it('should be able to set "from"', function(done) {
-          email.setFrom(from);
+      expect(email._bodyType).to.equal(bodyType)
+    })
 
-          expect(email._from).to.equal(from);
+    after(function () {
+      const data = {
+        Source: from,
+        Destination: {
+          ToAddresses: [ to ],
+          CcAddresses: [ cc ],
+          BccAddresses: [ bcc ]
+        },
+        Message: {
+          Subject: {
+            Data: subject
+          },
+          Body: {
+            Html: {
+              Data: body
+            }
+          }
+        },
+        ReplyToAddresses: [ replyTo ]
+      }
 
-          done();
-        });
-
-        it('should be able to set "replyTo"', function(done) {
-          email.setReplyTo(replyTo);
-
-          expect(email._replyTo.length).to.equal(1);
-
-          expect(email._replyTo[0]).to.equal(replyTo);
-
-          done();
-        });
-
-        it('should be able to set "subject"', function(done) {
-          email.setSubject(subject);
-
-          expect(email._subject).to.equal(subject);
-
-          done();
-        });
-
-        it('should be able to set "body"', function(done) {
-          email.setBody(body);
-
-          expect(email._body).to.equal(body);
-
-          done();
-        });
-
-        it('should be able to set "bodyType"', function(done) {
-          email.setFrom(bodyType);
-
-          expect(email._bodyType).to.equal(bodyType);
-
-          done();
-        });
-
-        after(function(done) {
-          const data = {
-            Source: from,
-            Destination: {
-              ToAddresses: [ to ],
-              CcAddresses: [ cc ],
-              BccAddresses:[ bcc ]
-            },
-            Message: {
-              Subject: {
-                Data: subject
-              },
-              Body: {
-                Html: {
-                  Data: body
-                }
-              }
-            },
-            ReplyToAddresses: [ replyTo ]
-          };
-
-          expect(email.getMessageData()).to.eql(data);
-
-          done();
-        });
-    });
-});
+      expect(email.getMessageData()).to.eql(data)
+    })
+  })
+})

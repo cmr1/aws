@@ -1,19 +1,21 @@
 {
   "name": "cmr1-aws",
-  "version": "0.3.0",
+  "version": "1.0.3-alpha",
   "description": "AWS service helper classes",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "pretest": "node hooks/pre-test.js --force",
+    "pretest": "npm run lint && npm audit && node hooks/pre-test.js --force",
     "test": "mocha test/**/*.spec.js",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
     "preversion": "npm test && travis lint .travis.yml",
     "postversion": "git push --follow-tags"
   },
   "engines": {
-    "node": ">=6.x"
+    "node": ">=8.x"
   },
   "author": "Charlie McClung",
   "license": "MIT",
@@ -23,14 +25,23 @@
   },
   "dependencies": {
     "async": "^2.1.4",
-    "aws-sdk": "^2.7.21",
+    "aws-sdk": "^2.325.0",
     "colors": "^1.1.2",
+    "standard": "^12.0.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "cmr1-cli": "^0.1.0",
-    "mocha": "^3.2.0",
-    "replace": "^0.3.0"
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.4",
+    "replace": "^1.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "examples/*",
+      "hooks/",
+      "test/*"
+    ]
   }
 }

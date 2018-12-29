@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-const expect = require('chai').expect;
+const expect = require('chai').expect
 
 // Require Utility Class
-const { Utility } = require('../../lib/primitives');
+const { Utility } = require('../../lib/primitives')
 
-describe('Utility', function() {
-    it('should exist', function() {
-        expect(Utility).to.exist;
-    });
-});
+describe('Utility', function () {
+  it('should exist', function () {
+    expect(Utility).to.exist
+  })
+})
